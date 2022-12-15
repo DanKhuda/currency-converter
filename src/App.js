@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import Preloader from "./components/preloader/Preloader";
+import useFetch from "./hooks/useFetch";
+import { ThemeProvider } from "styled-components";
+import { baseTheme } from "./styles/theme";
+import Header from "./components/header/Header";
+import Convertor from "./components/convertor/Convertor";
+import GlobalStyles from "./styles/global";
 
-function App() {
+const App = () => {
+  const {
+    data: rate,
+    isLoading,
+    error,
+  } = useFetch(`https://api.exchangerate.host/latest?base=UAH&symbols=USD,EUR,UAH`);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={baseTheme}>
+      <Header rate={rate} title="Currency rate" />
+      <Convertor rate={rate} title="Currency convertor" />
+      {error && <p>Error: {error}</p>}
+      {isLoading && <Preloader />}
+      <GlobalStyles />
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
